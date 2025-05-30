@@ -1,0 +1,84 @@
+"""Mappings package for Puzzle Swap ETL.
+
+This package contains mappings for addresses, assets, and function names
+used throughout the Puzzle ecosystem.
+"""
+
+from .addresses import (
+    ADDRESS_NAMES,
+    ALL_IMPORTANT_ADDRESSES,
+    ARKIMALS_EAGLES_ADDRESS,
+    EAGLES_STAKING_ADDRESS,
+    LOCKED_ADDRESSES,
+    POWER_DAO_ADDRESS,
+    PROTOCOL_ADDRESSES,
+    PROTOCOL_FEES_COLLECTORS,
+    PUZZLE_ARTEFACTS_ADDRESS,
+    PUZZLE_BOOSTER_ADDRESS,
+    PUZZLE_LEND_ADDRESSES,
+    PUZZLE_LIMITS_ADDRESS,
+    PUZZLE_ORACLE_ADDRESS,
+    PUZZLE_STAKING_ADDRESS,
+    REX_AGGREGATOR_ADDRESS,
+    STAKING_ADDRESSES,
+    TEAM_ADDRESSES,
+)
+from .assets import (
+    ASSET_DECIMALS,
+    ASSET_NAMES,
+    MAJOR_ASSETS,
+    PUZZLE_TOKEN_ID,
+    USDC_ID,
+    USDN_ID,
+    USDT_ID,
+    WAVES_ID,
+    AssetMapping,
+)
+from .classes import AddressMapping, FunctionMapping
+from .functions import (
+    IMPORTANT_FUNCTIONS,
+    LENDING_FUNCTIONS,
+    POOL_FUNCTIONS,
+    STAKING_FUNCTIONS,
+    SWAP_FUNCTIONS,
+)
+
+__all__ = [
+    # Mapping classes
+    "AddressMapping",
+    "AssetMapping",
+    "FunctionMapping",
+    # Addresses
+    "PROTOCOL_ADDRESSES",
+    "PUZZLE_STAKING_ADDRESS",
+    "PUZZLE_ORACLE_ADDRESS",
+    "PUZZLE_BOOSTER_ADDRESS",
+    "PUZZLE_ARTEFACTS_ADDRESS",
+    "REX_AGGREGATOR_ADDRESS",
+    "PROTOCOL_FEES_COLLECTORS",
+    "PUZZLE_LEND_ADDRESSES",
+    "EAGLES_STAKING_ADDRESS",
+    "ARKIMALS_EAGLES_ADDRESS",
+    "POWER_DAO_ADDRESS",
+    "PUZZLE_LIMITS_ADDRESS",
+    "ADDRESS_NAMES",
+    "TEAM_ADDRESSES",
+    "LOCKED_ADDRESSES",
+    "ALL_IMPORTANT_ADDRESSES",
+    "STAKING_ADDRESSES",
+    # Assets
+    "PUZZLE_TOKEN_ID",
+    "WAVES_ID",
+    "USDN_ID",
+    "USDT_ID",
+    "USDC_ID",
+    "ASSET_DECIMALS",
+    "ASSET_NAMES",
+    "MAJOR_ASSETS",
+    # Functions
+    "SWAP_FUNCTIONS",
+    "STAKING_FUNCTIONS",
+    "LENDING_FUNCTIONS",
+    "POOL_FUNCTIONS",
+    "IMPORTANT_FUNCTIONS",
+]

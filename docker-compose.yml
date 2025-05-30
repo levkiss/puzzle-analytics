@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: puzzle_swap_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: puzzle_swap
+      POSTGRES_USER: puzzle_user
+      POSTGRES_PASSWORD: puzzle_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U puzzle_user -d puzzle_swap"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - puzzle-network
+
+  puzzle-etl:
+    build: .
+    container_name: puzzle-swap-etl
+    environment:
+      DATABASE_URL: postgresql+asyncpg://puzzle_user:puzzle_password@postgres:5432/puzzle_swap
+      WAVES_NODE_URL: https://nodes.wx.network/
+      WAVES_NODE_BACKUP_URL: http://38.242.253.187:6869/
+      PUZZLE_TOKEN_ID: HEB8Qaw9xrWpWs8tHsiATYGBWDBtP2S7kcPALrMu43AS
+      PUZZLE_STAKING_ADDRESS: 3PFTbywqxtFfukX3HyT881g4iW5K4QL3FAS
+      PUZZLE_ORACLE_ADDRESS: 3P8d1E1BLKoD52y3bQJ1bDTd2TD1gpaLn9t
+      AGGREGATOR_URL: https://swapapi.puzzleswap.org/
+      PUZZLE_BASE_API_URL: https://puzzle-js-back.herokuapp.com/api/v1/pools
+      BATCH_SIZE: 100
+      MAX_TRANSACTIONS_IN_MEMORY: 1000
+      WORKER_THREADS: 2
+      LOG_LEVEL: INFO
+      LOG_FORMAT: json
+      DEBUG: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+    networks:
+      - puzzle-network
+    restart: unless-stopped
+
+  superset:
+    image: apache/superset:latest
+    container_name: puzzle-swap-superset
+    environment:
+      - SUPERSET_SECRET_KEY=your-secret-key-change-this-in-production
+      - SUPERSET_CONFIG_PATH=/app/superset_config.py
+      - POSTGRES_DB=puzzle_swap
+      - POSTGRES_USER=puzzle_user
+      - POSTGRES_PASSWORD=puzzle_password
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+    ports:
+      - "8088:8088"
+    volumes:
+      - superset_data:/app/superset_home
+      - ./superset_config.py:/app/superset_config.py
+      - ./superset-init.sh:/app/superset-init.sh
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - puzzle-network
+    command: >
+      bash -c "
+        pip install psycopg2-binary &&
+        /app/superset-init.sh &&
+        superset run -h 0.0.0.0 -p 8088 --with-threads --reload --debugger
+      "
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  superset_data:
+
+networks:
+  puzzle-network:
+    driver: bridge 
